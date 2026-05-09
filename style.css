@@ -1,0 +1,133 @@
+/* প্রফেশনাল টেলিগ্রাম অ্যাপ থিম */
+:root {
+    --tg-bg: #0f0f0f;
+    --tg-card: #1c1c1e;
+    --accent: linear-gradient(135deg, #ff9800 0%, #e65100 100%);
+    --gold: #ffcc00;
+    --text-white: #ffffff;
+    --text-gray: #b1b1b1;
+    --glass: rgba(255, 255, 255, 0.05);
+}
+
+body {
+    background-color: var(--tg-bg);
+    color: var(--text-white);
+    font-family: 'Inter', -apple-system, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    user-select: none; /* যাতে টেক্সট কপি করা না যায়, প্রফেশনাল লুকের জন্য */
+}
+
+.container {
+    width: 100%;
+    max-width: 420px;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* কার্ড ডিজাইন */
+.card {
+    background: var(--tg-card);
+    border-radius: 25px;
+    padding: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+}
+
+/* ইনপুট ফিল্ড স্টাইল */
+input {
+    width: 100%;
+    background: #2c2c2e;
+    border: 1px solid #3a3a3c;
+    padding: 15px;
+    margin: 12px 0;
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    outline: none;
+    transition: border 0.3s;
+}
+
+input:focus {
+    border-color: #ff9800;
+}
+
+/* মেইন বাটন ডিজাইন (Hamster Style) */
+.btn-primary {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 18px;
+    width: 100%;
+    border-radius: 18px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(230, 81, 0, 0.4);
+    transition: all 0.2s ease;
+}
+
+.btn-primary:active {
+    transform: scale(0.96); /* ক্লিক করলে বাটনটি হালকা ভেতরে যাবে */
+}
+
+/* ব্যালেন্স ও স্ট্যাটাস বক্স */
+.stat-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.stat-box {
+    background: var(--glass);
+    flex: 1;
+    padding: 15px;
+    border-radius: 18px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--text-gray);
+    display: block;
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--gold);
+}
+
+/* ইউনিক কোড ডিসপ্লে */
+.code-wrapper {
+    background: #000;
+    padding: 20px;
+    border-radius: 15px;
+    border: 2px dashed #444;
+    margin: 20px 0;
+}
+
+.code-text {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 24px;
+    color: var(--gold);
+    letter-spacing: 3px;
+    font-weight: bold;
+}
+
+/* এনিমেশন */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease forwards;
+}
