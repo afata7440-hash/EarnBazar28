@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pro Telegram Mini App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --card-bg: #1c1c1e;
+            --accent-color: #ff9800; /* হামস্টারের মতো গোল্ডেন/অরেঞ্জ কালার */
+            --text-main: #ffffff;
+            --text-dim: #b1b1b1;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 450px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            border: 1px solid #333;
+            text-align: center;
+        }
+
+        h1 { color: var(--accent-color); margin-bottom: 10px; font-size: 24px; }
+        p { color: var(--text-dim); font-size: 14px; }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            border-radius: 12px;
+            border: 1px solid #444;
+            background: #2c2c2e;
+            color: white;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        .main-btn {
+            background: linear-gradient(135deg, #ff9800 0%, #e65100 100%);
+            color: white;
+            border: none;
+            padding: 16px;
+            width: 100%;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(230, 81, 0, 0.3);
+            transition: transform 0.2s ease;
+        }
+
+        .main-btn:active { transform: scale(0.96); }
+
+        .hidden { display: none; }
+
+        /* ড্যাশবোর্ড স্টাইল */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-box {
+            background: #2c2c2e;
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid #3a3a3c;
+        }
+
+        .stat-label { font-size: 12px; color: var(--text-dim); display: block; }
+        .stat-value { font-size: 20px; font-weight: bold; color: var(--accent-color); }
+
+        .code-display {
+            background: #000;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px dashed var(--accent-color);
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 20px;
+            letter-spacing: 2px;
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    
+    <div id="reg-screen" class="card">
+        <h1>🚀 Registration</h1>
+        <p>আপনার তথ্য দিয়ে অ্যাকাউন্ট খুলুন</p>
+        <input type="text" id="name" placeholder="আপনার নাম">
+        <input type="number" id="age" placeholder="বয়স">
+        <input type="password" id="pass" placeholder="পাসওয়ার্ড">
+        <input type="text" id="phone" placeholder="মোবাইল নাম্বার">
+        <button class="main-btn" onclick="processRegistration()">রেজিস্ট্রেশন করুন</button>
+    </div>
+
+    <div id="main-screen" class="card hidden">
+        <h1>Welcome, <span id="user-display-name">User</span></h1>
+        
+        <div class="stat-grid">
+            <div class="stat-box">
+                <span class="stat-label">ব্যালেন্স</span>
+                <span class="stat-value">0.00 PT</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">রেফারেল</span>
+                <span class="stat-value">0</span>
+            </div>
+        </div>
+
+        <p>আপনার ইউনিক রেজিস্ট্রেশন কোড:</p>
+        <div id="reg-code-val" class="code-display">--------</div>
+        
+        <button class="main-btn" onclick="copyReferralLink()">রেফার লিংক কপি করুন</button>
+        
+        <div style="margin-top: 25px;">
+            <a href="https://t.me/your_channel" style="color: #00d2ff; text-decoration: none; font-size: 14px;">📢 জয়েন করুন আমাদের অফিশিয়াল চ্যানেল</a>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // টেলিগ্রাম ওয়েব অ্যাপ ইনিশিয়ালাইজেশন
+    const tg = window.Telegram.WebApp;
+    tg.expand(); // অ্যাপটি পুরো স্ক্রিন জুড়ে ওপেন হবে
+
+    // ইউনিক কোড জেনারেটর (DE78W2KUO0 ফরম্যাট)
+    function generateRegCode() {
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        let code = "DE";
+        for (let i = 0; i < 8; i++) {
+            code += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return code;
+    }
+
+    function processRegistration() {
+        const name = document.getElementById('name').value;
+        const phone = document.getElementById('phone').value;
+
+        if (!name || !phone) {
+            tg.showAlert("দয়া করে নাম এবং মোবাইল নাম্বার সঠিকভাবে দিন!");
+            return;
+        }
+
+        // হ্যাপটিক ফিডব্যাক (ভাইব্রেশন)
+        tg.HapticFeedback.notificationOccurred('success');
+
+        const myCode = generateRegCode();
+
+        // লোকাল স্টোরেজে ডাটা সেভ (যাতে রিফ্রেশ করলে ডাটা না হারায়)
+        localStorage.setItem('tma_user_name', name);
+        localStorage.setItem('tma_user_code', myCode);
+
+        displayDashboard(name, myCode);
+    }
+
+    function displayDashboard(name, code) {
+        document.getElementById('reg-screen').classList.add('hidden');
+        document.getElementById('main-screen').classList.remove('hidden');
+        document.getElementById('user-display-name').innerText = name;
+        document.getElementById('reg-code-val').innerText = code;
+    }
+
+    function copyReferralLink() {
+        const code = document.getElementById('reg-code-val').innerText;
+        const botUsername = "your_bot_username"; // এখানে আপনার বটের ইউজারনেম দিন
+        const refLink = `https://t.me/${botUsername}?start=${code}`;
+        
+        navigator.clipboard.writeText(refLink).then(() => {
+            tg.showScanQrPopup({ text: "লিংক কপি হয়েছে!" });
+            setTimeout(() => tg.closeScanQrPopup(), 1500);
+        });
+    }
+
+    // অ্যাপ লোড হওয়ার সময় চেক করবে আগে রেজিস্ট্রেশন করা আছে কি না
+    window.onload = () => {
+        const savedName = localStorage.getItem('tma_user_name');
+        const savedCode = localStorage.getItem('tma_user_code');
+        if (savedName && savedCode) {
+            displayDashboard(savedName, savedCode);
+        }
+    };
+</script>
+
+</body>
+</html>
